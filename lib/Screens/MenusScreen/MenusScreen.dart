@@ -37,7 +37,7 @@ void initState(){
   super.initState();
 }
   
-  Future<void> AddMenuHandler(String menu, bool visible) async{
+  Future<void> AddMenuHandler(String menu, bool visible, bool status) async{
     List<MenusModel> _menus = [];
     final menus = Provider.of<MenuProvider>(context, listen: false);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,7 +49,8 @@ void initState(){
         "restaurant_id": restaurant_id?.toString(),
         "menu_name": menu,
         "position": ((menus?.menus?.length ?? 0) + 1)?.toString(),
-        "visible": visible ? "1" : "0"
+        "visible": visible ? "1" : "0",
+        "status": status ? "1" : "0"
       };
          var header ={
   'Content-type': 'application/json'
@@ -87,7 +88,7 @@ print(e);
 
    Future<void> UpdateMenusHandler() async{
        final menus = Provider.of<MenuProvider>(context, listen: false).menus;
-
+ 
     try{
     List<MenusModel> _menus = [];
        List<MenusModel> menus_ = [];
@@ -201,6 +202,19 @@ final menus =     Provider.of<MenuProvider>(context, listen: false).menus;
 
    }
 
+   void UpdateStatus(String type, int index){
+   if(type == "visible"){
+      updatemenus[index]?.visible = updatemenus[index]?.visible == 1 ? 0 : 1;
+                   
+    setState(() {});
+   }else{
+    updatemenus[index]?.status = updatemenus[index]?.status == 1 ? 0 : 1;
+                   
+    setState(() {});
+   }
+
+   }
+
   @override
   Widget build(BuildContext context) {
     final menus =     Provider.of<MenuProvider>(context, listen: true).menus;
@@ -293,92 +307,97 @@ final menus =     Provider.of<MenuProvider>(context, listen: false).menus;
          title: Text('Menus',style: TextStyle(color: AppColors.greyBlackcolor, fontFamily: FONT_FAMILY, fontSize: ScreenUtil().setSp(16))),
          
       ),
-     body: SingleChildScrollView( 
-      child: Form(
-          key: formGlobalKey,
-        child: Column(
-          children: [
-            if(menus.length > 0)
-            ReorderableListView(
-              physics: NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              shrinkWrap: true,
-          onReorder: reorderData,
-          children: [
-           
-          for(int i = 0; i < menus.length; i++) 
-       
-       editing
-       ? Container(
-                   margin: const EdgeInsets.only(top: 10),
-                                 padding: const EdgeInsets.all(14.0),
-                                 
-                                      width: width * 0.90,
-                                                 decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            offset: Offset(0, 4),
-                                            blurRadius: 20,
-                                            color: const Color(0xFFB0CCE1).withOpacity(0.29),
-                                          ),
-                                        ],
-                                      ),
-                              
-        
-                  key: ValueKey(menus[i]),
-        child: UpdateMenuCard(menus[i], UpdateMenuName, i, DeleteMenu))
-        :     FadeInLeft(
-                    key: ValueKey(menus[i]),
+     body: RefreshIndicator(
+      onRefresh: () async{
+        await Provider.of<MenuProvider>(context, listen: false).getMenus();
+      },
+       child: SingleChildScrollView( 
+        child: Form(
+            key: formGlobalKey,
+          child: Column(
+            children: [
+              if(menus.length > 0)
+              ReorderableListView(
+                physics: NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                shrinkWrap: true,
+            onReorder: reorderData,
+            children: [
+             
+            for(int i = 0; i < menus.length; i++) 
+         
+         editing
+         ? Container(
+                     margin: const EdgeInsets.only(top: 10),
+                                   padding: const EdgeInsets.all(14.0),
+                                   
+                                        width: width * 0.90,
+                                                   decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: Offset(0, 4),
+                                              blurRadius: 20,
+                                              color: const Color(0xFFB0CCE1).withOpacity(0.29),
+                                            ),
+                                          ],
+                                        ),
+                                
           
-          delay: Duration(milliseconds: 500),
-          child: Container(
-                   margin: const EdgeInsets.only(top: 10),
-                                 padding: const EdgeInsets.all(14.0),
-                                 
-                                      width: width * 0.90,
-                                                 decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            offset: Offset(0, 4),
-                                            blurRadius: 20,
-                                            color: const Color(0xFFB0CCE1).withOpacity(0.29),
-                                          ),
-                                        ],
-                                      ),
-                              
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("${menus[i]?.menuName ?? ''}",
-                      style: TextStyle(color: AppColors.greyBlackcolor, fontFamily: FONT_FAMILY, fontSize: ScreenUtil().setSp(14), fontWeight: FontWeight.w500),
-                      ),
-                    
-                    Switch(  
-                  onChanged: (value){
-                  menus[i]?.visible = menus[i]?.visible == 1 ? 0 : 1;
-                  setState(() { });
-                  },  
-                  value: menus[i]?.visible == 1,  
-                  activeColor: AppColors.primaryColor,  
-                  activeTrackColor: Color(0xFFFDD4D7),  
-                  inactiveThumbColor: AppColors.greyBlackcolor,  
-                  inactiveTrackColor: AppColors.lightgreycolor,  
-                )  
-                    ],
+                    key: ValueKey(menus[i]),
+          child: UpdateMenuCard(menus[i], UpdateMenuName, i, DeleteMenu, UpdateStatus))
+          :     FadeInLeft(
+                      key: ValueKey(menus[i]),
+            
+            delay: Duration(milliseconds: 500),
+            child: Container(
+                     margin: const EdgeInsets.only(top: 10),
+                                   padding: const EdgeInsets.all(14.0),
+                                   
+                                        width: width * 0.90,
+                                                   decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              offset: Offset(0, 4),
+                                              blurRadius: 20,
+                                              color: const Color(0xFFB0CCE1).withOpacity(0.29),
+                                            ),
+                                          ],
+                                        ),
+                                
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("${menus[i]?.menuName ?? ''}",
+                        style: TextStyle(color: AppColors.greyBlackcolor, fontFamily: FONT_FAMILY, fontSize: ScreenUtil().setSp(14), fontWeight: FontWeight.w500),
+                        ),
+                      
+                      Switch(  
+                    onChanged: (value){
+                    menus[i]?.status = menus[i]?.status == 1 ? 0 : 1;
+                    setState(() { });
+                    },  
+                    value: menus[i]?.status == 1,  
+                    activeColor: AppColors.primaryColor,  
+                    activeTrackColor: Color(0xFFFDD4D7),  
+                    inactiveThumbColor: AppColors.greyBlackcolor,  
+                    inactiveTrackColor: AppColors.lightgreycolor,  
+                  )  
+                      ],
+                    ),
                   ),
-                ),
-        )
-          ],
+          )
+            ],
+            ),
+        
+            SizedBox(height: height * 0.80,)
+            ],
           ),
-      
-          SizedBox(height: height * 0.80,)
-          ],
         ),
-      ),
+       ),
      ),
     );
   }
@@ -386,7 +405,7 @@ final menus =     Provider.of<MenuProvider>(context, listen: false).menus;
 
 
 
-Widget UpdateMenuCard(MenusModel menu, Function UpdateMenuName, int index, Function DeleteMenu){
+Widget UpdateMenuCard(MenusModel menu, Function UpdateMenuName, int index, Function DeleteMenu, void Function(String type, int index) updateStatus){
   TextEditingController menuName = TextEditingController(text: menu?.menuName ?? '');
   menuName.selection = TextSelection.fromPosition(TextPosition(offset: menuName.text.length));
   print(menu?.menuName);
@@ -396,34 +415,79 @@ return FadeInRight(
     
     children: [
       new Flexible(
-            child: new TextFormField(
-              onChanged: (value){
-                UpdateMenuName(value, index);
-              },
-              controller: menuName,
-               style: TextStyle(fontSize: ScreenUtil().setSp(14.0), fontFamily: FONT_FAMILY, fontWeight: FontWeight.normal, color: AppColors.blackcolor),
-                                        cursorColor: AppColors.greycolor,
-                                         decoration:  InputDecoration(
-                              labelText: 'Menu Name',
-                              hintText: "Enter Menu Name",
-                              border: OutlineInputBorder(
-                              )
-                              ,
-                                 focusedBorder: OutlineInputBorder(
-                                 borderRadius: BorderRadius.all(Radius.circular(4)),
-                                 borderSide: BorderSide(width: 1,color: AppColors.lightgreycolor),
-                               ),
-                               enabledBorder: OutlineInputBorder(
-                                 borderRadius: BorderRadius.all(Radius.circular(4)),
-                                 borderSide: BorderSide(width: 1,color: AppColors.lightgreycolor),
-                               ),
-                              labelStyle: TextStyle(fontSize: ScreenUtil().setSp(12.0), fontFamily: FONT_FAMILY, fontWeight: FontWeight.normal, color: AppColors.greycolor)
-                                        // TODO: add errorHint
-                                        ),
-                                       validator: ((value){
-                          if(value == "") return "Menu name is required";
-                          return null;
-                        })    
+            child: Column(
+              children: [
+                new TextFormField(
+                  onChanged: (value){
+                    UpdateMenuName(value, index);
+                  },
+                  controller: menuName,
+                   style: TextStyle(fontSize: ScreenUtil().setSp(14.0), fontFamily: FONT_FAMILY, fontWeight: FontWeight.normal, color: AppColors.blackcolor),
+                                            cursorColor: AppColors.greycolor,
+                                             decoration:  InputDecoration(
+                                  labelText: 'Menu Name',
+                                  hintText: "Enter Menu Name",
+                                  border: OutlineInputBorder(
+                                  )
+                                  ,
+                                     focusedBorder: OutlineInputBorder(
+                                     borderRadius: BorderRadius.all(Radius.circular(4)),
+                                     borderSide: BorderSide(width: 1,color: AppColors.lightgreycolor),
+                                   ),
+                                   enabledBorder: OutlineInputBorder(
+                                     borderRadius: BorderRadius.all(Radius.circular(4)),
+                                     borderSide: BorderSide(width: 1,color: AppColors.lightgreycolor),
+                                   ),
+                                  labelStyle: TextStyle(fontSize: ScreenUtil().setSp(12.0), fontFamily: FONT_FAMILY, fontWeight: FontWeight.normal, color: AppColors.greycolor)
+                                            // TODO: add errorHint
+                                            ),
+                                           validator: ((value){
+                              if(value == "") return "Menu name is required";
+                              return null;
+                            })    
+                ),
+
+
+              Row(
+                children: [
+                  Column(
+                    children: [
+                      Text("Visible", style: TextStyle(color: AppColors.blackcolor, fontFamily: FONT_FAMILY, fontSize: ScreenUtil().setSp(15),fontWeight: FontWeight.w400 ),),
+                        Switch(  
+                    onChanged: (value){
+                   updateStatus("visible", index);
+                    },  
+                    value: menu.visible == 1,  
+                    activeColor: AppColors.primaryColor,  
+                    activeTrackColor: Color(0xFFFDD4D7),  
+                    inactiveThumbColor: AppColors.greyBlackcolor,  
+                    inactiveTrackColor: AppColors.lightgreycolor,  
+                  )
+                    ],
+                  ),
+                  SizedBox(width: 20,),
+
+                            Column(
+                    children: [
+                      Text("Status", style: TextStyle(color: AppColors.blackcolor, fontFamily: FONT_FAMILY, fontSize: ScreenUtil().setSp(15),fontWeight: FontWeight.w400 ),),
+                        Switch(  
+                    onChanged: (value){
+                   
+                   updateStatus("status", index);
+                    },  
+                    value: menu.status == 1,  
+                    activeColor: AppColors.primaryColor,  
+                    activeTrackColor: Color(0xFFFDD4D7),  
+                    inactiveThumbColor: AppColors.greyBlackcolor,  
+                    inactiveTrackColor: AppColors.lightgreycolor,  
+                  )
+                    ],
+                  )
+        
+                ],
+              )
+                
+              ],
             ),
           ),
 

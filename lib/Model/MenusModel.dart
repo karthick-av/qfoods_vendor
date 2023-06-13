@@ -3,6 +3,7 @@ class MenusModel {
   String? menuName;
   int? position;
   int? visible;
+  int? status;
   String? restaurantId;
 
   MenusModel(
@@ -10,6 +11,7 @@ class MenusModel {
       this.menuName,
       this.position,
       this.visible,
+      this.status,
       this.restaurantId});
 
   MenusModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class MenusModel {
     menuName = json['menu_name'];
     position = json['position'];
     visible = json['visible'];
+    status = json['status'];
     restaurantId = json['restaurant_id'];
   }
 
@@ -26,6 +29,7 @@ class MenusModel {
     data['menu_name'] = this.menuName;
     data['position'] = this.position;
     data['visible'] = this.visible;
+    data['status'] = this.status;
     data['restaurant_id'] = this.restaurantId;
     return data;
   }

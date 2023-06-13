@@ -1,7 +1,7 @@
 
 class ApiServices{
   ApiServices._();
-    static  const BASEURL = "https://qfoods-server.onrender.com/";
+    static  const BASEURL = "http://192.168.10.5:1999/";
 //    static const SOCKET_RECENT_ORDER_URL = "${BASEURL}recentorder";
 
    static const login = "${BASEURL}vendor/user/login";  
@@ -29,4 +29,6 @@ class ApiServices{
 
    static const updatemenu = "${BASEURL}vendor/dishes/updatemenu"; 
    static const dashboard = "${BASEURL}vendor/dashboard/count/";
+
+   static const orders = "${BASEURL}vendor/orders/";
      }

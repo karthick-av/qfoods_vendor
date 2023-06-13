@@ -13,6 +13,8 @@ Future<void> AddMenuBottomSheet(BuildContext context, Function AddMenuHandler) a
 
   TextEditingController menuName = TextEditingController();
   bool visible = false;
+  bool status = false;
+  
    return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -118,7 +120,27 @@ Future<void> AddMenuBottomSheet(BuildContext context, Function AddMenuHandler) a
                                           inactiveTrackColor: AppColors.lightgreycolor,  
                                         )
                                         ],
+                                      ),
+
+                                       SizedBox(height: 10,),
+                                      Row(
+                                        children: [
+                                          Text("status", style: TextStyle(color: AppColors.greyBlackcolor, fontFamily: FONT_FAMILY, fontSize: ScreenUtil().setSp(14), ),),
+                                              SizedBox(width: 10,),
+                                              Switch(  
+                                          onChanged: (value){
+                                         status = !status;
+                                          mystate(() { });
+                                          },  
+                                          value: status,  
+                                          activeColor: AppColors.primaryColor,  
+                                          activeTrackColor: Color(0xFFFDD4D7),  
+                                          inactiveThumbColor: AppColors.greyBlackcolor,  
+                                          inactiveTrackColor: AppColors.lightgreycolor,  
+                                        )
+                                        ],
                                       )
+                           
                                       ]
                                     ),
                                   ),
@@ -132,7 +154,7 @@ Future<void> AddMenuBottomSheet(BuildContext context, Function AddMenuHandler) a
                           return;
                         }
 Navigator.of(context).pop();
-                        AddMenuHandler(menuName.value.text, visible);
+                        AddMenuHandler(menuName.value.text, visible, status);
                                       },
                                       child: Container( 
                                                        padding: const EdgeInsets.all(10),

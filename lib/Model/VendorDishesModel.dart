@@ -35,7 +35,7 @@ class Dishes {
   int? combo;
   String? image;
   int? price;
-  String? offers;
+  int? offers;
   int? status;
   String? weight;
   int? dishId;
@@ -141,6 +141,7 @@ class DishVariants {
   int? position;
   int? priceType;
   int? variantId;
+  int? visible;
   List<VariantItems>? variantItems;
 
   DishVariants(
@@ -148,6 +149,7 @@ class DishVariants {
       this.type,
       this.position,
       this.priceType,
+      this.visible,
       this.variantId,
       this.variantItems});
 
@@ -157,6 +159,7 @@ class DishVariants {
     position = json['position'];
     priceType = json['price_type'];
     variantId = json['variant_id'];
+    visible = json['visible'];
     if (json['variant_items'] != null) {
       variantItems = <VariantItems>[];
       json['variant_items'].forEach((v) {
@@ -170,6 +173,7 @@ class DishVariants {
     data['name'] = this.name;
     data['type'] = this.type;
     data['position'] = this.position;
+    data['visible'] = this.visible;
     data['price_type'] = this.priceType;
     data['variant_id'] = this.variantId;
     if (this.variantItems != null) {
@@ -184,7 +188,7 @@ class VariantItems {
   String? name;
   String? image;
   int? price;
-  String? offers;
+  int? offers;
   int? status;
   String? weight;
   int? position;

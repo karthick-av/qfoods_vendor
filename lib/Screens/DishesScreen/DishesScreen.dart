@@ -54,7 +54,10 @@ void initState(){
 
   @override
   Widget build(BuildContext context) {
-    final dishes = Provider.of<DishesProvider>(context, listen: true).dishes;
+    final DishProvider = Provider.of<DishesProvider>(context, listen: true);
+    final dishes = DishProvider.dishes;
+    final updateLoading = DishProvider.updateLoading;
+   
     double height =  MediaQuery.of(context).size.height;
     double width =  MediaQuery.of(context).size.width;
    
@@ -77,7 +80,27 @@ void initState(){
                                       ),
                                     ],
                                   ),
-         child: InkWell( 
+         child: 
+         updateLoading
+         ?
+Container( 
+             height: height * 0.055,
+            width: width * 0.90,
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration( 
+              color: AppColors.primaryColor,
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child:SizedBox(
+              height: ScreenUtil().setSp(20),
+              width: ScreenUtil().setSp(18),
+              child:  CircularProgressIndicator(color: AppColors.whitecolor, strokeWidth: 2,),
+            ),
+          )
+         :
+         
+         InkWell( 
           onTap: (){
          Provider.of<DishesProvider>(context, listen: false).UpdateDishes();
           },

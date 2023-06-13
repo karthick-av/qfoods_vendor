@@ -11,7 +11,7 @@ class DishesServices{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
   final restaurant_id = await prefs.getInt("restaurant_id") ?? null;
   if(restaurant_id == null) return _dishes;
- 
+ print("${ApiServices.dishes_list}${restaurant_id}");
   var response = await http.get(Uri.parse("${ApiServices.dishes_list}${restaurant_id}"));
      if(response.statusCode == 200){
         var response_body = json.decode(response.body);
@@ -25,9 +25,9 @@ class DishesServices{
 }
 
 
- Future<List<VendorDishesModel>> UpdateDishesServices(List<dynamic> req_data) async{
+ Future<List<VendorDishesModel>> UpdateDishesServices(final req_data) async{
    List<VendorDishesModel> _dishes = [];
-  final jsonData = json.encode(req_data);
+  final jsonData = json.encode(req_data?.toList());
    var header ={
   'Content-type': 'application/json'
  };

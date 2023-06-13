@@ -5,6 +5,7 @@ import 'package:qfoods_vendor/Controller/DrawerIndexController.dart';
 import 'package:qfoods_vendor/Screens/DishesScreen/DishesScreen.dart';
 import 'package:qfoods_vendor/Screens/LoginScreen/LoginScreen.dart';
 import 'package:qfoods_vendor/Screens/MenusScreen/MenusScreen.dart';
+import 'package:qfoods_vendor/Screens/OrdersScreen/OrdersScreen.dart';
 import 'package:qfoods_vendor/constants/colors.dart';
 import 'package:qfoods_vendor/constants/font_family.dart';
 
@@ -76,6 +77,20 @@ return color;
                     },
                   ),
                   
+
+                  
+                    ListTile(
+                    leading: Icon(Icons.dining_sharp, size: ScreenUtil().setSp(25), color: drawerColor(4),),
+                    title:  Text(' Orders', style: TextStyle(color: drawerColor(4), fontFamily: FONT_FAMILY, fontSize: ScreenUtil().setSp(14)),),
+                    onTap: () {
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => 
+                         OrdersScreen()),
+                        );
+                       controller.currentIndex(4);
+                    },
+                  ),
                 ]
               ),
         

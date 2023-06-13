@@ -10,13 +10,26 @@ class MenuProvider extends ChangeNotifier {
 
   bool isLoading = false;
   List<MenusModel> menus = [];
+   List<dynamic> menus_ = [];
+
 
     Future<void> getMenus() async{
    isLoading = true;
     notifyListeners();
 
  try{
-    menus = await _service.getMenuServices();
+   List<dynamic> org = [];
+ 
+    List<MenusModel> res_menus = await _service.getMenuServices();
+    res_menus?.forEach((e) {
+       org.add({
+        "menu_id": e?.menuId,
+        "status": e?.status
+       });
+    });
+
+    menus =res_menus;
+    menus_ = org?.toList() ?? [];
     isLoading = false;
     notifyListeners();
 
