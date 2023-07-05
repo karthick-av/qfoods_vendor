@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:qfoods_vendor/Model/OrderModel.dart';
+import 'package:qfoods_vendor/Screens/OrdersScreen/ViewOrdersScreen.dart';
 import 'package:qfoods_vendor/constants/colors.dart';
 import 'package:qfoods_vendor/constants/font_family.dart';
 
@@ -24,11 +25,11 @@ class OrderCard extends StatelessWidget {
   }  
                         return InkWell(
                           onTap: (){
-                      //            Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => 
-                      //  ViewOrderScreen(orderDetail: order!)),
-                      // );
+                                 Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => 
+                       ViewOrderScreen(orderDetail: order!)),
+                      );
                           },
                           child: Container(
                             margin: const EdgeInsets.only(top: 10),

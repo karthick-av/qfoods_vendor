@@ -67,7 +67,7 @@ Future<void> getOrderHandler() async{
        OrderModel __order = OrderModel.fromJson(response_body);
 
        order = __order;
-       orderProvider.update(__order);
+    //   orderProvider.update(__order);
        setState(() {});
     }
   }catch(e){
@@ -81,16 +81,16 @@ Future<void> AcceptOrderAPIHandler() async{
  
   bottombtnLoading = true;
   setState(() {});
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final person_id = await prefs.getInt("person_id") ?? null;
-  if(person_id == null) return;
+   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final restaurant_id = await prefs.getInt("restaurant_id") ?? null;
+  if(restaurant_id == null) return;
  try{
    dynamic data = {
-    "user_id": person_id?.toString(),
+    "restaurant_id": restaurant_id?.toString(),
     "order_id": order?.orderId?.toString()
   };
 
- var response = await http.post(Uri.parse("${ApiServices.accept_restaurant_order}"),body: data);
+ var response = await http.post(Uri.parse(ApiServices.accept_order),body: data);
    bottombtnLoading = false;
   setState(() {});
   if (response.statusCode == 200) {
@@ -106,7 +106,7 @@ Future<void> AcceptOrderAPIHandler() async{
      if(__order?.orderId != null){
       order = __order;
       setState(() { });
-        orderProvider.(__order);
+       // orderProvider.update(__order);
          CustomSnackBar().ErrorMsgSnackBar("Order Taken By you");
      }
     }
@@ -116,8 +116,9 @@ Future<void> AcceptOrderAPIHandler() async{
      if(__order?.orderId != null){
       order = __order;
       setState(() { });
-      orderProvider.update(__order);
+      //orderProvider.update(__order);
          CustomSnackBar().ErrorMsgSnackBar("Order Taken By you");
+       orderProvider.UpdateOrder(__order);
      
      }    
   }else{
@@ -145,18 +146,19 @@ Future<void> CancelOrderHandler(String reason) async{
   statusloading = true;
   final orderProvider = Provider.of<OrdersProvider>(context, listen: false);
   setState(() {});
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final person_id = await prefs.getInt("person_id") ?? null;
-  if(person_id == null) return;
+   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final restaurant_id = await prefs.getInt("restaurant_id") ?? null;
+  if(restaurant_id == null) return;
+  if(restaurant_id == null) return;
  try{
    dynamic data = {
    "order_id": order?.orderId?.toString(), 
-    "cancellor_id": person_id?.toString(),
-     "cancellor_type": "Delivery", 
+    "cancellor_id": restaurant_id?.toString(),
+     "cancellor_type": "Vendor", 
      "reason": reason
   };
 
- var response = await http.put(Uri.parse("${ApiServices.cancel_order}"),body: data);
+ var response = await http.put(Uri.parse(ApiServices.cancel_order),body: data);
    statusloading = false;
   setState(() {});
   if (response.statusCode == 200) {
@@ -165,9 +167,10 @@ Future<void> CancelOrderHandler(String reason) async{
      OrderModel __order = OrderModel.fromJson(responseJson);
      if(__order?.orderId != null){
          CustomSnackBar().ErrorMsgSnackBar("Order Cancelled");
-         orderProvider.update(__order);
+        // orderProvider.update(__order);
       order = __order;
-     
+         orderProvider.UpdateOrder(__order);
+   
       setState(() { });
      
      }    

@@ -5,6 +5,7 @@ class ApiServices{
 //    static const SOCKET_RECENT_ORDER_URL = "${BASEURL}recentorder";
 
    static const login = "${BASEURL}vendor/user/login";  
+   static const update_fcm_token = "${BASEURL}vendor/user/fcmtoken";  
 
    static const add_menu = "${BASEURL}vendor/menu/";
    static const menus_list = "${BASEURL}vendor/menu/menus/";
@@ -31,4 +32,8 @@ class ApiServices{
    static const dashboard = "${BASEURL}vendor/dashboard/count/";
 
    static const orders = "${BASEURL}vendor/orders/";
+   
+   static const accept_order = "${BASEURL}vendor/orders/order/accept";
+   
+   static const cancel_order = "${BASEURL}vendor/orders/order/cancel";
      }

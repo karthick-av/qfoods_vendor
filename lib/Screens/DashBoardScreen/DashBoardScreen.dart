@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:qfoods_vendor/Navigation/DrawerMenu.dart';
 import 'package:qfoods_vendor/constants/CustomSnackBar.dart';
 import 'package:qfoods_vendor/constants/api_services.dart';
@@ -23,9 +25,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
 VendorDashboardModel? dashboard;
 
+final tokenUpdatedController controller = Get.put(tokenUpdatedController());
+
 void initState(){
    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
  DashboardHandler();
+ UpdateFcmTokenHandler();
    });
   super.initState();
 
@@ -52,6 +57,35 @@ Future<void> DashboardHandler() async{
    }
 
 
+Future<void> UpdateFcmTokenHandler() async{
+  try{
+    if(controller.isUpdated) return;
+ final uri = Uri.parse(ApiServices.update_fcm_token);
+ String? token = await FirebaseMessaging.instance.getToken();
+ final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final restaurant_id = await prefs.getInt("restaurant_id") ?? null;
+  if(restaurant_id == null) return;
+    final data = {
+      "restaurant_id": restaurant_id,
+      "fcm_token": token
+    };
+
+    var jsonString = json.encode(data);
+    print(jsonString);
+     var header ={
+  'Content-type': 'application/json'
+ };
+    final response = await http.put(uri, body: jsonString, headers: header);
+    print(response.statusCode);
+    if(response.statusCode == 200){
+      controller.update();
+    }
+
+  }
+  catch(e){
+
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -290,3 +324,10 @@ await DashboardHandler();
     );
   }
 }
+
+class tokenUpdatedController extends GetxController{
+  bool isUpdated = false;
+
+  Updated() => isUpdated = true;
+}
+
